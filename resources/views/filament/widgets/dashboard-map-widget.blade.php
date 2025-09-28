@@ -8,7 +8,7 @@
             @endpush
         @endonce
 
-        {{-- CSS untuk custom marker --}}
+        {{-- CSS untuk custom marker yang lebih keren --}}
         <style>
             .leaflet-popup-content-wrapper { border-radius: 8px; }
             .custom-div-icon { display: flex; justify-content: center; align-items: center; }
@@ -16,11 +16,11 @@
                 width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
                 position: absolute; transform: rotate(-45deg);
                 left: 50%; top: 50%; margin: -15px 0 0 -15px;
-                border: 1px solid #FFFFFF; box-shadow: 0 0 5px rgba(0,0,0,0.5);
+                border: 2px solid #FFFFFF; box-shadow: 0 0 8px rgba(0,0,0,0.6);
             }
             .marker-pin::after {
                 content: ''; width: 14px; height: 14px;
-                margin: 8px 0 0 8px; background: #ffffff;
+                margin: 7px 0 0 7px; background: #ffffff;
                 position: absolute; border-radius: 50%;
             }
         </style>
@@ -59,7 +59,8 @@
 
                         this.sites.forEach(site => {
                             if (site.latitude && site.longitude) {
-                                const statusColor = site.status ? '#22c55e' : '#ef4444';
+                                // PERBAIKAN: Cek status dengan 'active'
+                                const statusColor = site.status === 'active' ? '#22c55e' : '#ef4444'; // Hijau untuk aktif, Merah untuk inaktif
                                 const customIcon = L.divIcon({
                                     className: 'custom-div-icon',
                                     html: `<div style='background-color:${statusColor};' class='marker-pin'></div>`,
@@ -67,9 +68,10 @@
                                     iconAnchor: [15, 30]
                                 });
 
+                                // PERBAIKAN: Tampilkan status dengan benar di popup
                                 L.marker([site.latitude, site.longitude], { icon: customIcon })
                                     .addTo(this.map)
-                                    .bindPopup(`<b>${site.name}</b><br>Status: ${site.status ? 'Aktif' : 'Inaktif'}`);
+                                    .bindPopup(`<b>${site.name}</b><br>Status: ${site.status === 'active' ? 'Aktif' : 'Inaktif'}`);
                             }
                         });
                     });
@@ -79,24 +81,8 @@
             class="w-full"
         >
             {{-- Elemen div untuk peta --}}
-            <div x-ref="mapContainer" class="h-[30rem] w-full rounded-lg z-10"></div>
+            <div x-ref="mapContainer" class="h-[60vh] w-full rounded-lg z-10"></div>
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>
-
-<?php
-protected function getViewData(): array
-{
-    $sites = Site::all();
-    $totalSites = $sites->count();
-    $activeSites = $sites->where('status', true)->count();
-
-    return [
-        'sites' => $sites,
-        'totalSites' => $totalSites,
-        'activeSites' => $activeSites,
-        'inactiveSites' => $totalSites - $activeSites,
-    ];
-}
-?>
 

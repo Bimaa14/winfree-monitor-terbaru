@@ -8,19 +8,23 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class SiteStatsOverview extends BaseWidget
 {
+    // PENTING: Menambahkan listener agar widget ini ikut ter-update saat tombol refresh ditekan
+    protected $listeners = ['refresh-widgets' => '$refresh'];
+
     protected function getStats(): array
     {
         // Ambil data dari database
         $totalSites = Site::count();
-        $activeSites = Site::where('status', 'active')->count();
-        $inactiveSites = Site::where('status', 'inactive')->count();
+        // Perbaiki query: status adalah boolean (true/1 untuk aktif, false/0 untuk inaktif)
+        $activeSites = Site::where('status', true)->count();
+        $inactiveSites = $totalSites - $activeSites;
 
         return [
             // Kartu 1: Total Sites
             Stat::make('Total Sites', $totalSites)
                 ->description('Semua site yang terdaftar')
-                ->descriptionIcon('heroicon-m-globe-alt')
-                ->color('primary'),
+                ->descriptionIcon('heroicon-m-server-stack')
+                ->color('gray'),
 
             // Kartu 2: Sites Aktif
             Stat::make('Sites Aktif', $activeSites)
@@ -36,3 +40,4 @@ class SiteStatsOverview extends BaseWidget
         ];
     }
 }
+

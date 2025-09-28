@@ -11,17 +11,24 @@ class DashboardMapWidget extends Widget
 
     protected int | string | array $columnSpan = 'full';
 
-    protected function getViewData(): array
+    /**
+     * Disediakan sebagai "Computed Property" (getSitesProperty).
+     * Ini membuat data tersedia sebagai `$this->sites` di seluruh siklus hidup komponen,
+     * yang menyelesaikan error "Property not found" saat Livewire melakukan update.
+     */
+    public function getSitesProperty(): array
     {
-        $sites = Site::all();
-        $totalSites = $sites->count();
-        $activeSites = $sites->where('status', true)->count();
-
-        return [
-            'sites' => $sites,
-            'totalSites' => $totalSites,
-            'activeSites' => $activeSites,
-            'inactiveSites' => $totalSites - $activeSites,
-        ];
+        // Ambil semua data site dan pastikan latitude/longitude adalah float
+        return Site::all()->map(function ($site) {
+            return [
+                'id' => $site->id,
+                'name' => $site->name,
+                // Pastikan status dikirim sebagai 'active' atau 'inactive'
+                'status' => $site->status ? 'active' : 'inactive',
+                'latitude' => (float) $site->latitude,
+                'longitude' => (float) $site->longitude,
+            ];
+        })->toArray();
     }
 }
+
