@@ -2,8 +2,7 @@
 
 namespace App\Providers\Filament;
 
-// Tambahkan ini
-use App\Http\Middleware\CspMiddleware;
+// TIDAK ADA LAGI USE CspMiddleware
 
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,10 +43,9 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                CspMiddleware::class, // <-- Daftarkan "satpam" di sini
+                // TIDAK ADA LAGI CspMiddleware::class
             ])
             ->authMiddleware([Authenticate::class]);
     }
-
-    // Pastikan method register() yang salah sudah dihapus dari sini
 }
+
