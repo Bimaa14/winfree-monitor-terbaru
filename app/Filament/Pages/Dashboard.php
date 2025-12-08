@@ -47,6 +47,7 @@ class Dashboard extends BaseDashboard
             ->success()
             ->send();
 
+        // Memicu event untuk me-refresh semua widget.
         $this->dispatch('refresh-widgets');
     }
 }
